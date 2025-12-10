@@ -1,0 +1,80 @@
+<div class="creatures-page">
+  <div class="page-header">
+    <h1>🦄 Különleges Lények</h1>
+    <p class="subtitle">A nyilvántartásban szereplő különleges lények listája</p>
+    <a routerLink="/creatures/new" class="btn-primary">
+      <span class="icon">➕</span>
+      Új Lény Hozzáadása
+    </a>
+  </div>
+
+  @if (isLoading()) {
+    <div class="loading">
+      <div class="spinner"></div>
+      <p>Lények betöltése...</p>
+    </div>
+  }
+
+  @if (errorMessage()) {
+    <div class="error-box">
+      {{ errorMessage() }}
+    </div>
+  }
+
+  @if (!isLoading() && !errorMessage()) {
+    @if (creatures().length === 0) {
+      <div class="empty-state">
+        <div class="empty-icon">🔍</div>
+        <h2>Még nincsenek lények</h2>
+        <p>Kezdje el a különleges lények nyilvántartását!</p>
+        <a routerLink="/creatures/new" class="btn-primary">Első Lény Hozzáadása</a>
+      </div>
+    } @else {
+      <div class="creatures-grid">
+        @for (creature of creatures(); track creature.id) {
+          <div class="creature-card">
+            <a [routerLink]="['/creatures', creature.id]" class="card-link">
+              <div class="card-header">
+                <h3>{{ creature.name }}</h3>
+                @if (creature.category) {
+                  <span class="badge">{{ creature.category.name }}</span>
+                }
+              </div>
+
+              <p class="description">{{ creature.description }}</p>
+
+              @if (creature.abilities && creature.abilities.length > 0) {
+                <div class="abilities">
+                  <span class="abilities-label">Képességek:</span>
+                  <div class="abilities-list">
+                    @for (ability of creature.abilities.slice(0, 3); track ability.id) {
+                      <span class="ability-tag">{{ ability.name }}</span>
+                    }
+                    @if (creature.abilities.length > 3) {
+                      <span class="ability-tag more">+{{ creature.abilities.length - 3 }}</span>
+                    }
+                  </div>
+                </div>
+              }
+
+              <div class="card-footer">
+                <span class="date">
+                  Létrehozva: {{ creature.created_at ? (creature.created_at | date:'yyyy.MM.dd') : '-' }}
+                </span>
+              </div>
+            </a>
+
+            <div class="card-actions">
+              <a [routerLink]="['/creatures', creature.id, 'edit']" class="btn-edit" title="Szerkesztés">
+                ✏️
+              </a>
+              <button (click)="deleteCreature(creature.id, $event)" class="btn-delete" title="Törlés">
+                🗑️
+              </button>
+            </div>
+          </div>
+        }
+      </div>
+    }
+  }
+</div>

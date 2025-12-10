@@ -1,0 +1,75 @@
+<div class="gallery-page">
+  <div class="gallery-header">
+    <div class="breadcrumb">
+      @if (creatureId) {
+        <a [routerLink]="['/creatures', creatureId]">← Vissza a lényhez</a>
+      }
+    </div>
+    <h1>🖼️ Galéria</h1>
+    @if (creatureName()) {
+      <p class="subtitle">{{ creatureName() }} képei</p>
+    }
+  </div>
+
+  @if (errorMessage()) {
+    <div class="error-message">
+      {{ errorMessage() }}
+    </div>
+  }
+
+  <div class="upload-section">
+    <label for="file-upload" class="upload-button" [class.uploading]="isUploading()">
+      @if (isUploading()) {
+        <span class="loading-spinner"></span>
+        <span>Feltöltés...</span>
+      } @else {
+        <span class="upload-icon">📤</span>
+        <span>Kép feltöltése</span>
+      }
+    </label>
+    <input
+      id="file-upload"
+      type="file"
+      accept="image/*"
+      (change)="onFileSelected($event)"
+      [disabled]="isUploading()"
+      style="display: none"
+    />
+    <p class="upload-hint">Támogatott formátumok: JPG, PNG, GIF (max. 5MB)</p>
+  </div>
+
+  @if (isLoading()) {
+    <div class="loading">
+      <div class="spinner"></div>
+      <p>Képek betöltése...</p>
+    </div>
+  }
+
+  @if (!isLoading()) {
+    @if (gallery().length === 0) {
+      <div class="empty-state">
+        <div class="empty-icon">🖼️</div>
+        <h2>Még nincsenek képek</h2>
+        <p>Töltse fel az első képet a galériába!</p>
+      </div>
+    } @else {
+      <div class="gallery-grid">
+        @for (image of gallery(); track image.id) {
+          <div class="gallery-item" (click)="openImage(image)">
+            <img [src]="image.image_url" [alt]="image.image_path" />
+            <div class="image-overlay">
+              <span class="view-icon">🔍</span>
+            </div>
+          </div>
+        }
+      </div>
+    }
+  }
+</div>
+
+@if (selectedImage()) {
+  <div class="lightbox" (click)="closeImage()">
+    <button class="close-button" (click)="closeImage()">✕</button>
+    <img [src]="selectedImage().image_url" [alt]="selectedImage().image_path" (click)="$event.stopPropagation()" />
+  </div>
+}

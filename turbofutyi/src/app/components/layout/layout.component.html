@@ -1,0 +1,54 @@
+<div class="layout">
+  <header class="header">
+    <div class="container">
+      <div class="header-content">
+        <div class="logo">
+          <a routerLink="/creatures" class="logo-link">
+            <span class="logo-icon">🦄</span>
+            <span class="logo-text">KÜLKAT</span>
+          </a>
+          <span class="logo-subtitle">Különleges Lények Katasztere</span>
+        </div>
+
+        <button class="menu-toggle" (click)="toggleMenu()" [class.active]="isMenuOpen">
+          <span></span>
+          <span></span>
+          <span></span>
+        </button>
+
+        <nav class="nav" [class.open]="isMenuOpen">
+          <a routerLink="/creatures" routerLinkActive="active" (click)="closeMenu()">
+            <span class="nav-icon">🏠</span>
+            Lények
+          </a>
+          <a routerLink="/creatures/new" routerLinkActive="active" (click)="closeMenu()">
+            <span class="nav-icon">➕</span>
+            Új Lény
+          </a>
+          <a routerLink="/contact" routerLinkActive="active" (click)="closeMenu()">
+            <span class="nav-icon">✉️</span>
+            Kapcsolat
+          </a>
+          @if (currentUser$ | async; as user) {
+            <div class="user-menu">
+              <span class="user-name">👤 {{ user.name }}</span>
+              <button class="btn-logout" (click)="logout()">Kijelentkezés</button>
+            </div>
+          }
+        </nav>
+      </div>
+    </div>
+  </header>
+
+  <main class="main-content">
+    <div class="container">
+      <router-outlet></router-outlet>
+    </div>
+  </main>
+
+  <footer class="footer">
+    <div class="container">
+      <p>&copy; 2024 KÜLKAT - Különleges Lények Katasztere. Minden jog fenntartva.</p>
+    </div>
+  </footer>
+</div>

@@ -1,0 +1,123 @@
+<div class="detail-page">
+  @if (isLoading()) {
+    <div class="loading">
+      <div class="spinner"></div>
+      <p>Betöltés...</p>
+    </div>
+  }
+
+  @if (errorMessage()) {
+    <div class="error-box">
+      {{ errorMessage() }}
+    </div>
+  }
+
+  @if (creature(); as creature) {
+    <div class="detail-container">
+      <div class="detail-header">
+        <div class="breadcrumb">
+          <a routerLink="/creatures">← Vissza a listához</a>
+        </div>
+        <div class="title-section">
+          <h1>{{ creature.name }}</h1>
+          @if (creature.category) {
+            <span class="category-badge">{{ creature.category.name }}</span>
+          }
+        </div>
+        <div class="actions">
+          <a [routerLink]="['/creatures', creature.id, 'edit']" class="btn-secondary">
+            ✏️ Szerkesztés
+          </a>
+          <a [routerLink]="['/creatures', creature.id, 'gallery']" class="btn-secondary">
+            🖼️ Galéria
+          </a>
+          <button (click)="deleteCreature()" class="btn-danger">
+            🗑️ Törlés
+          </button>
+        </div>
+      </div>
+
+      <div class="detail-content">
+        <div class="info-card">
+          <h2>Leírás</h2>
+          <p class="description">{{ creature.description }}</p>
+        </div>
+
+        <div class="info-card">
+          <div class="section-header">
+            <h2>Képességek</h2>
+            <button (click)="openAbilityModal()" class="btn-primary-small">
+              ➕ Képesség hozzáadása
+            </button>
+          </div>
+
+          @if (creature.abilities && creature.abilities.length > 0) {
+            <div class="abilities-grid">
+              @for (ability of creature.abilities; track ability.id) {
+                <div class="ability-card">
+                  <div class="ability-content">
+                    <h3>{{ ability.name }}</h3>
+                    @if (ability.description) {
+                      <p>{{ ability.description }}</p>
+                    }
+                  </div>
+                  <button (click)="removeAbility(ability.id)" class="btn-remove" title="Eltávolítás">
+                    ✕
+                  </button>
+                </div>
+              }
+            </div>
+          } @else {
+            <p class="empty-message">Még nincsenek képességek hozzárendelve.</p>
+          }
+        </div>
+
+        <div class="info-card">
+          <h2>További információk</h2>
+          <div class="meta-info">
+            <div class="meta-item">
+              <span class="meta-label">Létrehozva:</span>
+              <span class="meta-value">{{ creature.created_at ? (creature.created_at | date:'yyyy.MM.dd HH:mm') : '-' }}</span>
+            </div>
+            <div class="meta-item">
+              <span class="meta-label">Módosítva:</span>
+              <span class="meta-value">{{ creature.updated_at ? (creature.updated_at | date:'yyyy.MM.dd HH:mm') : '-' }}</span>
+            </div>
+          </div>
+        </div>
+      </div>
+    </div>
+  }
+</div>
+
+@if (showAbilityModal()) {
+  <div class="modal-overlay" (click)="closeAbilityModal()">
+    <div class="modal-content" (click)="$event.stopPropagation()">
+      <div class="modal-header">
+        <h2>Képesség hozzáadása</h2>
+        <button (click)="closeAbilityModal()" class="btn-close">✕</button>
+      </div>
+      <div class="modal-body">
+        @if (allAbilities().length > 0) {
+          <div class="abilities-select-list">
+            @for (ability of allAbilities(); track ability.id) {
+              @if (!hasAbility(ability.id)) {
+                <div class="ability-select-item" (click)="addAbility(ability.id)">
+                  <div>
+                    <h4>{{ ability.name }}</h4>
+                    @if (ability.description) {
+                      <p>{{ ability.description }}</p>
+                    }
+                  </div>
+                  <span class="add-icon">➕</span>
+                </div>
+              }
+            }
+          </div>
+        } @else {
+          <p class="empty-message">Nincsenek elérhető képességek.</p>
+        }
+      </div>
+    </div>
+  </div>
+}

@@ -1,0 +1,112 @@
+<div class="form-page">
+  <div class="form-container">
+    <div class="form-header">
+      <div class="breadcrumb">
+        <a routerLink="/creatures">← Vissza a listához</a>
+      </div>
+      <h1>{{ isEditMode() ? 'Lény Szerkesztése' : 'Új Lény Létrehozása' }}</h1>
+      <p class="subtitle">
+        {{ isEditMode() ? 'Módosítsa a lény adatait' : 'Adjon hozzá egy új különleges lényt a kataszterhez' }}
+      </p>
+    </div>
+
+    @if (errorMessage()) {
+      <div class="error-message">
+        {{ errorMessage() }}
+      </div>
+    }
+
+    <form [formGroup]="creatureForm" (ngSubmit)="onSubmit()" class="creature-form">
+      <div class="form-group">
+        <label for="name">Lény neve <span class="required">*</span></label>
+        <input
+          id="name"
+          type="text"
+          formControlName="name"
+          class="form-control"
+          [class.error]="name?.invalid && name?.touched"
+          placeholder="pl. Teleportáló Teve, Hangulatváltós Kaktusz"
+        />
+        @if (name?.invalid && name?.touched) {
+          <div class="field-error">
+            @if (name?.errors?.['required']) {
+              <span>A név megadása kötelező</span>
+            }
+            @if (name?.errors?.['minlength']) {
+              <span>A névnek legalább 3 karakter hosszúnak kell lennie</span>
+            }
+            @if (name?.errors?.['maxlength']) {
+              <span>A név maximum 100 karakter hosszú lehet</span>
+            }
+          </div>
+        }
+      </div>
+
+      <div class="form-group">
+        <label for="category_id">Kategória <span class="required">*</span></label>
+        <select
+          id="category_id"
+          formControlName="category_id"
+          class="form-control"
+          [class.error]="category_id?.invalid && category_id?.touched"
+        >
+          <option value="">-- Válasszon kategóriát --</option>
+          @for (category of categories(); track category.id) {
+            <option [value]="category.id">{{ category.name }}</option>
+          }
+        </select>
+        @if (category_id?.invalid && category_id?.touched) {
+          <div class="field-error">
+            <span>A kategória kiválasztása kötelező</span>
+          </div>
+        }
+      </div>
+
+      <div class="form-group">
+        <label for="description">Leírás <span class="required">*</span></label>
+        <textarea
+          id="description"
+          formControlName="description"
+          class="form-control textarea"
+          [class.error]="description?.invalid && description?.touched"
+          placeholder="Írja le a lény jellemzőit, különleges tulajdonságait..."
+          rows="6"
+        ></textarea>
+        @if (description?.invalid && description?.touched) {
+          <div class="field-error">
+            @if (description?.errors?.['required']) {
+              <span>A leírás megadása kötelező</span>
+            }
+            @if (description?.errors?.['minlength']) {
+              <span>A leírásnak legalább 10 karakter hosszúnak kell lennie</span>
+            }
+            @if (description?.errors?.['maxlength']) {
+              <span>A leírás maximum 1000 karakter hosszú lehet</span>
+            }
+          </div>
+        }
+        <div class="char-counter">
+          {{ description?.value?.length || 0 }} / 1000 karakter
+        </div>
+      </div>
+
+      <div class="form-actions">
+        <a routerLink="/creatures" class="btn-cancel">
+          Mégse
+        </a>
+        <button
+          type="submit"
+          class="btn-submit"
+          [disabled]="creatureForm.invalid || isLoading()"
+        >
+          @if (isLoading()) {
+            <span class="loading-spinner"></span>
+            <span>Mentés...</span>
+          } @else {
+            <span>{{ isEditMode() ? '💾 Módosítások mentése' : '➕ Lény létrehozása' }}</span>
+          }
+        </button>
+      </div>
+    </form>
+  </div>
+</div>
