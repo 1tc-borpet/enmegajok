@@ -22,9 +22,21 @@ class StoreCreatureRequest extends FormRequest
     public function rules(): array
     {
         return [
-            'nev' => 'required|string|max:255',
-            'leiras' => 'nullable|string',
-            'kategoria_id' => 'required|exists:kategoriak,id',
+            'name' => 'required|string|max:255',
+            'description' => 'nullable|string',
+            'category_id' => 'required|exists:kategoriak,id',
         ];
+    }
+
+    /**
+     * Prepare data for validation - map English field names to Hungarian database columns
+     */
+    protected function prepareForValidation(): void
+    {
+        $this->merge([
+            'nev' => $this->name,
+            'leiras' => $this->description,
+            'kategoria_id' => $this->category_id,
+        ]);
     }
 }

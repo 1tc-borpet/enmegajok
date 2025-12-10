@@ -22,9 +22,30 @@ class UpdateCreatureRequest extends FormRequest
     public function rules(): array
     {
         return [
-            'nev' => 'sometimes|string|max:255',
-            'leiras' => 'nullable|string',
-            'kategoria_id' => 'sometimes|exists:kategoriak,id',
+            'name' => 'sometimes|required|string|max:255',
+            'description' => 'nullable|string',
+            'category_id' => 'sometimes|required|exists:kategoriak,id',
         ];
+    }
+
+    /**
+     * Get validated data with Hungarian field names for database
+     */
+    public function validatedWithDbFields(): array
+    {
+        $validated = $this->validated();
+        $data = [];
+        
+        if (isset($validated['name'])) {
+            $data['nev'] = $validated['name'];
+        }
+        if (isset($validated['description'])) {
+            $data['leiras'] = $validated['description'];
+        }
+        if (isset($validated['category_id'])) {
+            $data['kategoria_id'] = $validated['category_id'];
+        }
+        
+        return $data;
     }
 }

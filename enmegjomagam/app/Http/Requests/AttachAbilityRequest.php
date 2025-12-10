@@ -22,7 +22,17 @@ class AttachAbilityRequest extends FormRequest
     public function rules(): array
     {
         return [
-            'kepesseg_id' => 'required|exists:kepessegek,id',
+            'ability_id' => 'required|exists:kepessegek,id',
         ];
+    }
+
+    /**
+     * Prepare data for validation - map English field name to Hungarian database column
+     */
+    protected function prepareForValidation(): void
+    {
+        $this->merge([
+            'kepesseg_id' => $this->ability_id,
+        ]);
     }
 }

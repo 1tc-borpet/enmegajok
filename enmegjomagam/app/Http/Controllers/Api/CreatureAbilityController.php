@@ -13,7 +13,8 @@ class CreatureAbilityController extends Controller
     {
         $leny = Leny::findOrFail($id);
         
-        $leny->kepessegek()->attach($request->kepesseg_id);
+        $validated = $request->validated();
+        $leny->kepessegek()->attach($validated['ability_id']);
         
         $leny->load('kepessegek');
 
