@@ -46,6 +46,19 @@
   font-size: 2rem;
 }
 
+.logo-image {
+  height: 90px;
+  width: auto;
+  object-fit: contain;
+  filter: drop-shadow(0 3px 6px rgba(0, 0, 0, 0.3));
+  transition: all 0.3s ease;
+}
+
+.logo-link:hover .logo-image {
+  transform: scale(1.08) rotate(-3deg);
+  filter: drop-shadow(0 5px 10px rgba(0, 0, 0, 0.4));
+}
+
 .logo-text {
   font-size: 1.75rem;
   font-weight: 700;
